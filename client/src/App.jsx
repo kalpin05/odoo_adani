@@ -3,10 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import Dashboard from "./pages/Dashboard"
-import MaintenanceBoard from "./pages/MaintenanceBoard"
-import MaintenanceForm from "./pages/MaintenanceForm"
 import MaintainanceReports from "./pages/MaintainanceReports.jsx"
-import EquipmentList from "./pages/EquipmentList"
+import EquipmentList from "./pages/Equipment"
 import WorkCenters from "./pages/WorkCenters"
 import Teams from "./pages/Teams"
 import Calendar from "./pages/Calendar"
@@ -28,9 +26,6 @@ export default function App() {
         {isAuthenticated ? (
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
-
-            <Route path="/maintenance" element={<MaintenanceBoard />} />
-            <Route path="/maintenance/new" element={<MaintenanceForm />} />
             <Route path="/reporting" element={<MaintainanceReports />} />
             <Route path="/equipment" element={<EquipmentList />} />
             <Route path="/work-centers" element={<WorkCenters />} />
