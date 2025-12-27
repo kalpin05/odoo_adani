@@ -64,4 +64,3 @@ exports.deactivateUser = async (req, res) => {
     res.status(500).json({ status: 'error', message: error.message });
   }
 };
-

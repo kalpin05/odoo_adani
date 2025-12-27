@@ -1,0 +1,48 @@
+# Node / Express
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# React build output
+build/
+dist/
+out/
+
+# Vite / CRA cache
+.vite/
+.cache/
+
+# Logs
+logs/
+*.log
+
+# PostgreSQL / pgAdmin
+.pgpass
+pgadmin4.db
+*.sql
+*.dump
+*.backup
+.pgdata/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# Coverage / Tests
+coverage/
+
+# Temporary files
+tmp/
+temp/
