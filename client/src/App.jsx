@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
 
-import Auth from "./pages/Auth"
+import Login from "./pages/Login"
+import Signup from "./pages/Signup"
 import Dashboard from "./pages/Dashboard"
 import MaintenanceBoard from "./pages/MaintenanceBoard"
 import MaintenanceForm from "./pages/MaintenanceForm"
@@ -10,6 +11,7 @@ import WorkCenters from "./pages/WorkCenters"
 import Teams from "./pages/Teams"
 import Calendar from "./pages/Calendar"
 import AppLayout from "./Layouts/AppLayout.jsx"
+import ForgotPassword from "./pages/ForgotPassword.jsx"
 
 export default function App() {
   const isAuthenticated = true // fake for hackathon
@@ -18,12 +20,15 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* Public */}
-        <Route path="/login" element={<Auth />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/forgot-password" element={<ForgotPassword/>}/>
 
         {/* Protected */}
         {isAuthenticated ? (
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
+
             <Route path="/maintenance" element={<MaintenanceBoard />} />
             <Route path="/maintenance/new" element={<MaintenanceForm />} />
             <Route path="/reporting" element={<MaintainanceReports />} />

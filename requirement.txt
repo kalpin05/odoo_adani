@@ -14,3 +14,4 @@ npm install tailwindcss @tailwindcss/vite
 npm install tailwindcss @tailwindcss/vite
 npm install react-router-dom
 >>>>>>> 3a51172 (frontend routes setup)
+npm install react-hook-form zod @hookform/resolvers
