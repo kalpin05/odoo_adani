@@ -1,50 +1,53 @@
 import { useState } from "react"
-import StatsCards from "../components/dashboard/StatsCards"
 import RequestsTable from "../components/dashboard/RequestsTable"
 import MaintenanceRequestModal from "../components/maintenance/MaintenanceRequestModal"
-
-const dummyRequests = [
-  {
-    id: 1,
-    subject: "Test activity",
-    status: "In Progress",
-    equipment: "Acer Laptop",
-    category: "Computers",
-    technician: "Aka Foster",
-    priority: "High",
-    scheduledAt: "2025-12-28 14:30",
-    notes: "Screen flickering issue",
-  },
-  {
-    id: 2,
-    subject: "Battery replacement",
-    status: "New",
-    equipment: "HP Elitebook",
-    category: "Computers",
-    technician: "Unassigned",
-    priority: "Medium",
-    scheduledAt: null,
-    notes: "",
-  },
-]
+import StatsCards from "../components/dashboard/StatsCards"
 
 export default function Dashboard() {
   const [selectedRequest, setSelectedRequest] = useState(null)
 
   return (
-    <div className="space-y-6">
-      <StatsCards />
-      <RequestsTable
-        data={dummyRequests}
-        onSelect={setSelectedRequest}
-      />
+    <>
+  {/* Page Wrapper */}
+  <div className="space-y-6">
 
-      {selectedRequest && (
-        <MaintenanceRequestModal
-          request={selectedRequest}
-          onClose={() => setSelectedRequest(null)}
+    {/* Stats Section */}
+    <section>
+      <StatsCards />
+    </section>
+
+    {/* Requests Section */}
+    <section className="bg-white rounded-2xl border shadow-sm">
+      {/* Header */}
+      <div className="px-6 py-4 border-b">
+        <h2 className="text-lg font-semibold text-gray-800">
+          Maintenance Requests
+        </h2>
+        <p className="text-sm text-gray-500">
+          Click a request to view full details
+        </p>
+      </div>
+
+      {/* Table */}
+      <div className="p-4">
+        <RequestsTable
+          onSelect={(r) => {
+            console.log("ROW CLICKED:", r)
+            setSelectedRequest(r)
+          }}
         />
-      )}
-    </div>
+      </div>
+    </section>
+  </div>
+
+  {/* Maintenance Request Modal */}
+  {selectedRequest && (
+    <MaintenanceRequestModal
+      request={selectedRequest}
+      onClose={() => setSelectedRequest(null)}
+    />
+  )}
+</>
+
   )
 }
