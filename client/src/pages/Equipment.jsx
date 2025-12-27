@@ -2,6 +2,7 @@ import { useState } from "react"
 import EquipmentTable from "../components/equipment/EquipmentTable"
 import EquipmentModal from "../components/equipment/EquipmentModal"
 
+
 const EQUIPMENT_DATA = [
   {
     id: 1,
