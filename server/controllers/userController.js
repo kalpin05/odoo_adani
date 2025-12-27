@@ -3,7 +3,7 @@ const pool = require('../config/db');
 // 2.1 GET /users - Retrieve all users
 exports.getAllUsers = async (req, res) => {
   try {
-    const query = 'SELECT id, name, email, role FROM users ORDER BY id ASC';
+    const query = 'SELECT id, name, email, role FROM gear_user ORDER BY id ASC';
     const { rows } = await pool.query(query);
     
     res.status(200).json({
@@ -23,7 +23,7 @@ exports.updateUser = async (req, res) => {
 
   try {
     const query = `
-      UPDATE users 
+      UPDATE gear_users 
       SET name = COALESCE($1, name), 
           email = COALESCE($2, email), 
           role = COALESCE($3, role) 
@@ -52,7 +52,7 @@ exports.deactivateUser = async (req, res) => {
   try {
     // Note: The provided SQL doesn't have an 'is_active' column.
     // If you want a hard delete:
-    const query = 'DELETE FROM users WHERE id = $1 RETURNING id';
+    const query = 'DELETE FROM gear_users WHERE id = $1 RETURNING id';
     const { rows } = await pool.query(query, [userId]);
 
     if (rows.length === 0) {

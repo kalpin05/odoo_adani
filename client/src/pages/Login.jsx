@@ -1,37 +1,57 @@
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
-import { Link } from "react-router-dom"
+import { Link, useNavigate, useLocation } from "react-router-dom"
 import AuthLayout from "../components/AuthLayout"
 
 const loginSchema = z.object({
-  email: z
-    .string()
-    .email("Please enter a valid email address"),
-
+  email: z.string().email("Please enter a valid email address"),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(
-      /[^a-zA-Z0-9]/,
-      "Password must contain at least one special character"
-    ),
-});
+    .regex(/[^a-zA-Z0-9]/, "Password must contain at least one special character"),
+})
 
 export default function Login() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const from = location.state?.from?.pathname || "/"
+
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(loginSchema),
   })
 
-  const onSubmit = (data) => {
-    console.log("LOGIN DATA", data)
+  const onSubmit = async (data) => {
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      })
+
+      const json = await res.json()
+
+      if (!res.ok) {
+        throw new Error(json?.message || "Login failed")
+      }
+
+      const token = json?.data?.token
+      if (token) {
+        localStorage.setItem("token", token)
+        navigate(from, { replace: true })
+      } else {
+        throw new Error("No token received")
+      }
+    } catch (err) {
+      alert(err?.message || "Login failed")
+    }
   }
 
   return (
@@ -82,8 +102,12 @@ export default function Login() {
           </Link>
         </div>
 
-        <button className="w-full bg-teal-500 text-white py-2 rounded-lg hover:bg-teal-600 transition">
-          Sign In
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full bg-teal-500 text-white py-2 rounded-lg hover:bg-teal-600 transition disabled:opacity-50"
+        >
+          {isSubmitting ? "Signing In..." : "Sign In"}
         </button>
       </form>
 

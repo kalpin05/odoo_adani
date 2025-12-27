@@ -6,8 +6,7 @@ const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
-  port: process.env.PORT || 5432,
-});
+port: Number(process.env.DB_PORT) || 5432,});
 
 pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);

@@ -11,8 +11,14 @@ import Calendar from "./pages/Calendar"
 import AppLayout from "./Layouts/AppLayout.jsx"
 import ForgotPassword from "./pages/ForgotPassword.jsx"
 
+function AuthGuard({ children }) {
+  const token = localStorage.getItem("token")
+  return token ? children : <Navigate to="/login" state={{ from: location }} replace />
+}
+
 export default function App() {
-  const isAuthenticated = true // fake for hackathon
+  const token = localStorage.getItem("token")
+  const isAuthenticated = !!token
 
   return (
     <BrowserRouter>
@@ -20,7 +26,7 @@ export default function App() {
         {/* Public */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-        <Route path="/forgot-password" element={<ForgotPassword/>}/>
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Protected */}
         {isAuthenticated ? (
@@ -33,7 +39,7 @@ export default function App() {
             <Route path="/calendar" element={<Calendar />} />
           </Route>
         ) : (
-          <Route path="*" element={<Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         )}
       </Routes>
     </BrowserRouter>

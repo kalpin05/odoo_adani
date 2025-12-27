@@ -1,18 +1,16 @@
 import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import StatsCards from "../components/dashboard/StatsCards"
 import RequestsTable from "../components/dashboard/RequestsTable"
 import MaintenanceRequestModal from "../components/maintenance/MaintenanceRequestModal"
 import StatsCards from "../components/dashboard/StatsCards"
 
 export default function Dashboard() {
   const [selectedRequest, setSelectedRequest] = useState(null)
+  const navigate = useNavigate()
 
   return (
-    <>
-  {/* Page Wrapper */}
-  <div className="space-y-6">
-
-    {/* Stats Section */}
-    <section>
+    <div className="space-y-6">
       <StatsCards />
     </section>
 

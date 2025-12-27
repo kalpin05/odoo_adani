@@ -1,18 +1,19 @@
-for client:
-<<<<<<< HEAD
- cors@2.8.5
-├── dotenv@17.2.3
-├── express@5.2.1
-├── jsonwebtoken@9.0.3
-└─┬ pg@8.16.3
-  └─┬ pg-pool@3.10.1
-    └── pg@8.16.3 deduped
-    nodemon@3.1.11
-npm install tailwindcss @tailwindcss/vite
-=======
+# NOTE:
+# This is NOT a Python requirements file.
+# Do NOT run: pip install -r requirement.txt
+# Use the commands below with npm.
 
+# Server (backend)
+npm install express cors dotenv jsonwebtoken pg
+npm install --save-dev nodemon
+
+# Client (frontend)
 npm install tailwindcss @tailwindcss/vite
 npm install react-router-dom
+<<<<<<< Updated upstream
 >>>>>>> 3a51172 (frontend routes setup)
 npm install react-hook-form zod @hookform/resolvers
 npm i lucide-react
+=======
+npm install react-hook-form zod @hookform/resolvers
+>>>>>>> Stashed changes
