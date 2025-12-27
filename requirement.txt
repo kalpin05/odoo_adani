@@ -1,4 +1,5 @@
 for client:
+<<<<<<< HEAD
  cors@2.8.5
 ├── dotenv@17.2.3
 ├── express@5.2.1
@@ -8,3 +9,8 @@ for client:
     └── pg@8.16.3 deduped
     nodemon@3.1.11
 npm install tailwindcss @tailwindcss/vite
+=======
+
+npm install tailwindcss @tailwindcss/vite
+npm install react-router-dom
+>>>>>>> 3a51172 (frontend routes setup)

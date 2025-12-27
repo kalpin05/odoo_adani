@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "server",
   "version": "1.0.0",
@@ -18,3 +19,6 @@
     "pg": "^8.16.3"
   }
 }
+=======
+{}
+>>>>>>> 3a51172 (frontend routes setup)

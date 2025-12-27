@@ -1,9 +1,14 @@
-import React from 'react'
+import { NavLink } from "react-router-dom"
 
-const Navbar = () => {
+export default function Navbar() {
   return (
-    <div>Navbar</div>
+    <nav className="w-60 border-r p-4 space-y-3">
+      <NavLink to="/">Dashboard</NavLink>
+      <NavLink to="/maintenance">Maintenance</NavLink>
+      <NavLink to="/equipment">Equipment</NavLink>
+      <NavLink to="/work-centers">Work Centers</NavLink>
+      <NavLink to="/teams">Teams</NavLink>
+      <NavLink to="/calendar">Calendar</NavLink>
+    </nav>
   )
 }
-
-export default Navbar
