@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Search, Filter, Users } from 'lucide-react';
 
@@ -7,18 +7,77 @@ const Teams = () => {
   
   const [searchQuery, setSearchQuery] = useState('');
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [teams, setTeams] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  const allTeams = [
-    { id: 't1', name: 'Mechanical Team', skill: 'Industrial Machinery', members: 5, requests: 1, color: 'text-green-600 bg-green-100' },
-    { id: 't2', name: 'Electrical Team', skill: 'Power Systems', members: 8, requests: 3, color: 'text-yellow-600 bg-yellow-100' },
-    { id: 't3', name: 'IT Support Team', skill: 'Software/Hardware', members: 3, requests: 2, color: 'text-red-600 bg-red-100' },
-    { id: 't4', name: 'Facilities Team', skill: 'Building Maint.', members: 4, requests: 0, color: 'text-gray-600 bg-gray-100' },
-  ];
+  useEffect(() => {
+    let cancelled = false;
 
-  const filteredTeams = allTeams.filter(team => 
-    team.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    team.skill.toLowerCase().includes(searchQuery.toLowerCase())
+    async function loadTeams() {
+      try {
+        setLoading(true);
+        setError('');
+
+        const res = await fetch('/api/teams', {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          throw new Error(text || `Request failed (${res.status})`);
+        }
+
+        const json = await res.json();
+        const rows = json?.data?.teams ?? [];
+
+        if (!cancelled) setTeams(rows);
+      } catch (e) {
+        if (!cancelled) setError(e?.message || 'Failed to load teams');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    loadTeams();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const filteredTeams = teams.filter(team => 
+    team.name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleCreateTeam = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const name = formData.get('name');
+    if (!name) return;
+
+    try {
+      const res = await fetch('/api/teams', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text || `Request failed (${res.status})`);
+      }
+
+      const json = await res.json();
+      setTeams(prev => [...prev, json?.data?.team]);
+      setShowCreateModal(false);
+    } catch (err) {
+      alert(err?.message || 'Failed to create team');
+    }
+  };
+
+  if (loading) return <div className="p-8 text-sm text-gray-500">Loading teams...</div>;
+  if (error) return <div className="p-8 text-sm text-red-500">{error}</div>;
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen font-sans">
@@ -46,7 +105,7 @@ const Teams = () => {
             <Filter className="w-4 h-4" />
           </button>
 
-          {/* CREATE NEW TEAM BUTTON - Updated to Emerald/Teal [#00C49A] */}
+          {/* CREATE NEW TEAM BUTTON */}
           <button 
             onClick={() => setShowCreateModal(true)}
             className="flex items-center gap-2 bg-[#00C49A] text-white px-5 py-2.5 rounded-full font-bold text-sm hover:bg-[#00ab86] transition-all shadow-md active:scale-95"
@@ -63,7 +122,7 @@ const Teams = () => {
             <div className="flex justify-between items-start mb-4">
               <div>
                 <h3 className="font-bold text-gray-800 text-lg leading-tight">{team.name}</h3>
-                <p className="text-gray-400 text-xs mt-1">Skill: {team.skill}</p>
+                <p className="text-gray-400 text-xs mt-1">Members: {team.member_count ?? 0}</p>
               </div>
               <button 
                 onClick={() => navigate(`/teams/${team.id}`)}
@@ -81,15 +140,15 @@ const Teams = () => {
                   </div>
                 ))}
               </div>
-              <span className="ml-4 text-sm text-gray-600 font-semibold">{team.members} Members</span>
+              <span className="ml-4 text-sm text-gray-600 font-semibold">{team.member_count ?? 0} Members</span>
             </div>
 
             <div className="mt-8 pt-5 border-t border-gray-50 flex justify-end">
               <button 
-                onClick={() => navigate(`/maintenance?teamId=${team.id}`)}
-                className={`px-4 py-1.5 rounded-full text-xs font-bold transition-transform active:scale-95 shadow-sm ${team.color}`}
+                onClick={() => navigate('/')}
+                className="px-4 py-1.5 rounded-full text-xs font-bold transition-transform active:scale-95 shadow-sm text-gray-600 bg-gray-100"
               >
-                {team.requests} Open Requests
+                View Requests
               </button>
             </div>
           </div>
@@ -99,29 +158,31 @@ const Teams = () => {
       {/* CREATE TEAM MODAL */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl scale-in-center">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Create New Team</h2>
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Team Name</label>
-                <input type="text" placeholder="e.g. Mechanical Team" className="w-full p-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#00C49A] outline-none transition-all" />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Specialization</label>
-                <input type="text" placeholder="e.g. Hydraulics" className="w-full p-3.5 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#00C49A] outline-none transition-all" />
-              </div>
-              <div className="flex gap-4 mt-8">
+          <div className="bg-white rounded-3xl p-8 max-w-md w-full shadow-2xl">
+            <h3 className="text-lg font-semibold mb-4">Create New Team</h3>
+            <form onSubmit={handleCreateTeam}>
+              <input 
+                name="name" 
+                placeholder="Team Name" 
+                required 
+                className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00C49A]" 
+              />
+              <div className="flex justify-end gap-2 mt-6">
                 <button 
-                  onClick={() => setShowCreateModal(false)}
-                  className="flex-1 py-3.5 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-colors"
+                  type="button" 
+                  onClick={() => setShowCreateModal(false)} 
+                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
-                <button className="flex-1 py-3.5 bg-[#00C49A] text-white rounded-2xl font-bold hover:bg-[#00ab86] transition-all shadow-lg shadow-[#00C49A]/20">
-                  Create Team
+                <button 
+                  type="submit" 
+                  className="px-4 py-2 bg-[#00C49A] text-white rounded-lg hover:bg-[#00ab86] transition-colors"
+                >
+                  Create
                 </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
       )}

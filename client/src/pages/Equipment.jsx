@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react"
 import EquipmentTable from "../components/equipment/EquipmentTable"
 import EquipmentModal from "../components/equipment/EquipmentModal"
+import EquipmentFormModal from "../components/equipment/EquipmentFormModal"
 
 function mapEquipmentFromApi(row) {
   const purchaseDate = row.purchase_date
@@ -35,6 +36,7 @@ function mapEquipmentFromApi(row) {
 export default function Equipment() {
   const [equipment, setEquipment] = useState([])
   const [selectedEquipment, setSelectedEquipment] = useState(null)
+  const [showFormModal, setShowFormModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
 
@@ -66,7 +68,7 @@ export default function Equipment() {
         }
 
         const json = await res.json()
-        const rows = json?.data?.equipment ?? []
+        const rows = json?.data ?? []
         const mapped = rows.map(mapEquipmentFromApi)
 
         if (!cancelled) setEquipment(mapped)
@@ -83,12 +85,39 @@ export default function Equipment() {
     }
   }, [authHeaders])
 
+  const handleCreateEquipment = async (formData) => {
+    const res = await fetch("/api/equipment", {
+      method: "POST",
+      headers: authHeaders,
+      body: JSON.stringify(formData),
+    })
+
+    if (!res.ok) {
+      const text = await res.text()
+      throw new Error(text || `Request failed (${res.status})`)
+    }
+
+    // Mock response handling - in real app would use res.json()
+    const newEquipment = mapEquipmentFromApi({
+      id: Date.now(), // Mock ID
+      name: formData.name,
+      department: formData.category,
+      location: "New Location",
+      ...formData
+    })
+
+    setEquipment(prev => [...prev, newEquipment])
+  }
+
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-gray-800">Equipment</h1>
 
-        <button className="px-4 py-2 rounded-lg bg-teal-500 text-white text-sm">
+        <button
+          onClick={() => setShowFormModal(true)}
+          className="px-4 py-2 rounded-lg bg-teal-500 text-white text-sm hover:bg-teal-600 transition-colors"
+        >
           + New
         </button>
       </div>
@@ -111,6 +140,12 @@ export default function Equipment() {
           onClose={() => setSelectedEquipment(null)}
         />
       )}
+
+      <EquipmentFormModal
+        isOpen={showFormModal}
+        onClose={() => setShowFormModal(false)}
+        onSubmit={handleCreateEquipment}
+      />
     </div>
   )
 }

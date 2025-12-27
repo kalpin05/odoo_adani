@@ -1,12 +1,12 @@
 import { NavLink } from "react-router-dom";
 
 const navItems = [
-  { name: "Maintenance", path: "/maintenance" },
   { name: "Dashboard", path: "/" },
-  { name: "Maintenance Calendar", path: "/calendar" },
   { name: "Equipment", path: "/equipment" },
-  { name: "Reporting", path: "/reporting" }, 
+  { name: "Work Centers", path: "/work-centers" },
   { name: "Teams", path: "/teams" },
+  { name: "Calendar", path: "/calendar" },
+  { name: "Reports", path: "/reporting" },
 ];
 
 export default function Navbar() {

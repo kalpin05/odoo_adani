@@ -19,6 +19,8 @@ const calendarRoutes = require('./routes/calendar.routes');
 
 const reportsRoutes = require('./routes/reports.routes');
 
+const statsRoutes = require('./routes/stats.routes');
+
 // Initialize Express
 const app = express();
 
@@ -50,6 +52,8 @@ app.use('/api/maintenance-requests', requestRoutes);
 app.use('/api/calendar', calendarRoutes);
 
 app.use('/api/reports', reportsRoutes);
+
+app.use('/api/stats', statsRoutes);
 
 // 3. Root Route (For health check)
 app.get('/', (req, res) => {

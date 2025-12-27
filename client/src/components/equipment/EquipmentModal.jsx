@@ -1,4 +1,4 @@
-//popup modal to show equipment details
+// Modal for viewing equipment details
 
 export default function EquipmentModal({ equipment, onClose }) {
   return (
